@@ -10,6 +10,8 @@ from bot.blocklists import banned, shadowbanned
 from bot.config_reader import config
 from bot.filters import SupportedMediaFilter
 
+from keyboards.user_btns import kb
+
 router = Router()
 
 
@@ -34,7 +36,7 @@ async def cmd_start(message: Message, l10n: FluentLocalization):
     :param message: сообщение от пользователя с командой /start
     :param l10n: объект локализации
     """
-    await message.answer(l10n.format_value("intro"))
+    await message.answer(l10n.format_value("intro"), reply_markup = kb)
 
 
 @router.message(Command(commands=["help"]))
@@ -48,10 +50,10 @@ async def cmd_help(message: Message, l10n: FluentLocalization):
     await message.answer(l10n.format_value("help"))
 
 
-@router.message(F.text)
+@router.message(Command(commands=["Задать вопрос"]))
 async def text_message(message: Message, bot: Bot, l10n: FluentLocalization):
     """
-    Хэндлер на текстовые сообщения от пользователя
+    Хэндлер на команду "Задать вопрос"
 
     :param message: сообщение от пользователя для админа(-ов)
     :param l10n: объект локализации
@@ -70,6 +72,11 @@ async def text_message(message: Message, bot: Bot, l10n: FluentLocalization):
         )
         create_task(_send_expiring_notification(message, l10n))
 
+
+@router.message(Command(commands=["Коллекция ОС"]))
+async def collection_OS(message: Message, bot: Bot):
+    #здесь нужно просто принтить таблицу 
+    return
 
 @router.message(SupportedMediaFilter())
 async def supported_media(message: Message, l10n: FluentLocalization):
